@@ -38,13 +38,13 @@ toJsonOption option =
   in
     Encode.encode 0 encoder
 
-renderGraph : Graph -> Html msg
-renderGraph graph =
+renderGraph : Graph -> GraphOption -> Html msg
+renderGraph graph option =
   let
     json = toJson graph
-    option = toJsonOption { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
+    optionJson = toJsonOption option
   in
     node "render-graph"
       [ attribute "json" json
-      , attribute "option" option
+      , attribute "option" optionJson
       ] []

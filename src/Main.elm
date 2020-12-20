@@ -68,5 +68,5 @@ view model =
       , Input.number [Input.id "focal", Input.value (String.fromFloat model.focal), Input.onInput SetFocal, Input.attrs [step "0.5"]]
       ]
     ]
-  , renderGraph model.graph
+  , renderGraph model.graph { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
   ]
