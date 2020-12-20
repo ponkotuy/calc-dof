@@ -7,7 +7,7 @@ import Browser
 import Dof exposing (..)
 import Graph exposing (Data, Graph, renderGraph)
 import Html exposing (Html, div, text)
-import Html.Attributes exposing (for, step)
+import Html.Attributes exposing (for, id, step)
 
 main = Browser.sandbox { init = init, update = update, view = view }
 
@@ -56,17 +56,24 @@ calc model =
 
 view : Model -> Html Msg
 view model =
-  div []
-  [ CDN.stylesheet
-  , Form.form []
-    [ Form.group []
-      [ Form.label [for "fvalue"] [text "F値"]
-      , Input.number [Input.id "fvalue", Input.value (String.fromFloat model.fValue), Input.onInput SetFValue, Input.attrs [step "0.1"]]
+  let
+    oFocus = overfocus model.fValue model.focal
+  in
+    div []
+    [ CDN.stylesheet
+    , Form.form []
+      [ Form.group []
+        [ Form.label [for "fvalue"] [text "F値"]
+        , Input.number [Input.id "fvalue", Input.value (String.fromFloat model.fValue), Input.onInput SetFValue, Input.attrs [step "0.1"]]
+        ]
+      , Form.group []
+        [ Form.label [for "focal"] [text "焦点距離(mm)"]
+        , Input.number [Input.id "focal", Input.value (String.fromFloat model.focal), Input.onInput SetFocal, Input.attrs [step "0.5"]]
+        ]
+      , Form.group []
+        [ Form.label [for "overfocus"] [text "過焦点距離(mm)"]
+        , div [id "overfocus"] [text (milliMeter oFocus)]
+        ]
       ]
-    , Form.group []
-      [ Form.label [for "focal"] [text "焦点距離(mm)"]
-      , Input.number [Input.id "focal", Input.value (String.fromFloat model.focal), Input.onInput SetFocal, Input.attrs [step "0.5"]]
-      ]
+    , renderGraph model.graph { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
     ]
-  , renderGraph model.graph { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
-  ]
