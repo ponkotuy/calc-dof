@@ -1,4 +1,5 @@
 module Main exposing (..)
+import Bootstrap.Button as Button exposing (onClick)
 import Bootstrap.CDN as CDN
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
@@ -58,17 +59,23 @@ view : Model -> Html Msg
 view model =
   let
     oFocus = overfocus model.fValue model.focal
+    fValues = ["0.95", "1.4", "1.8", "2.8", "4", "5.6", "8", "11", "16", "22"]
+    fValueButtons = List.map (\f -> Button.button [Button.light, onClick (SetFValue f)] [text f]) fValues
+    focuses = ["7", "14", "24", "28", "35", "50", "70", "100", "200", "400", "600", "800"]
+    focusButtons = List.map (\f -> Button.button [Button.light, onClick (SetFocal f)] [text f]) focuses
   in
     div []
     [ CDN.stylesheet
     , Form.form []
       [ Form.group []
         [ Form.label [for "fvalue"] [text "F値"]
-        , Input.number [Input.id "fvalue", Input.value (String.fromFloat model.fValue), Input.onInput SetFValue, Input.attrs [step "0.1"]]
+        , Input.number [Input.id "fvalue", Input.value (String.fromFloat model.fValue), Input.onInput SetFValue, Input.attrs [step "0.05"]]
+        , div [] fValueButtons
         ]
       , Form.group []
         [ Form.label [for "focal"] [text "焦点距離(mm)"]
         , Input.number [Input.id "focal", Input.value (String.fromFloat model.focal), Input.onInput SetFocal, Input.attrs [step "0.5"]]
+        , div [] focusButtons
         ]
       , Form.group []
         [ Form.label [for "overfocus"] [text "過焦点距離(mm)"]
