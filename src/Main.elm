@@ -1,86 +1,41 @@
 module Main exposing (..)
-import Bootstrap.Button as Button exposing (onClick)
-import Bootstrap.CDN as CDN
-import Bootstrap.Form as Form
-import Bootstrap.Form.Input as Input
 
+import Bootstrap.CDN as CDN
+import Bootstrap.Tab as Tab
 import Browser
-import Dof exposing (..)
-import Graph exposing (Data, Graph, renderGraph)
-import Html exposing (Html, div, text)
-import Html.Attributes exposing (for, id, step)
+import Html exposing (Html, div, h2, iframe, text)
+import Html.Attributes exposing (attribute, height, src, style, width)
 
 main = Browser.sandbox { init = init, update = update, view = view }
 
-type Msg = SetFValue String | SetFocal String
+type Msg = SetTab Tab.State
 
-type alias Model =
-  { fValue: Float, focal: Float, graph: Graph }
+type alias Model = { tab : Tab.State }
 
 init : Model
-init =
-  { fValue = 1.4, focal = 25.0, graph = { label = "後方被写界深度", data = calcGraph 1.4 25.0 } }
-
-lengths = [100, 150, 200, 300, 500, 700, 1000, 1500, 2000, 3000, 5000, 7000, 10000, 15000, 20000, 30000, 50000, 70000, 100000]
+init = { tab = Tab.initialState }
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    SetFValue fValue ->
-      calc { model | fValue = fValue |> String.toFloat |> Maybe.withDefault 1.4 }
-    SetFocal focal ->
-      calc { model | focal = focal |> String.toFloat |> Maybe.withDefault 25.0 }
+    SetTab tab ->
+      { model | tab = tab }
 
-calcGraph : Float -> Float -> List Data
-calcGraph fValue focal =
-  let
-    diff len =
-      let
-        x = after fValue len focal
-      in
-        if x > 0 then x else 0
-    f len = { x = len, y = diff len }
-    result = List.map f lengths
-    max = List.map (\p -> p.y) result |> List.maximum |> Maybe.withDefault 0
-  in
-     List.map (\p -> if p.y == 0 then { p | y = max } else p) result
-
-calc : Model -> Model
-calc model =
-  let
-    newdata = calcGraph model.fValue model.focal
-    graph = model.graph
-  in
-    { model
-      | graph = { graph | data = newdata }
-    }
+genIframe : String -> Html msg
+genIframe url =
+  iframe [src url, attribute "width" "100%", attribute "height" "820px", style "border" "0px"] []
 
 view : Model -> Html Msg
 view model =
-  let
-    oFocus = overfocus model.fValue model.focal
-    fValues = ["0.95", "1.4", "1.8", "2.8", "4", "5.6", "8", "11", "16", "22"]
-    fValueButtons = List.map (\f -> Button.button [Button.light, onClick (SetFValue f)] [text f]) fValues
-    focuses = ["7", "14", "24", "28", "35", "50", "70", "100", "200", "400", "600", "800"]
-    focusButtons = List.map (\f -> Button.button [Button.light, onClick (SetFocal f)] [text f]) focuses
-  in
-    div []
-    [ CDN.stylesheet
-    , Form.form []
-      [ Form.group []
-        [ Form.label [for "fvalue"] [text "F値"]
-        , Input.number [Input.id "fvalue", Input.value (String.fromFloat model.fValue), Input.onInput SetFValue, Input.attrs [step "0.05"]]
-        , div [] fValueButtons
-        ]
-      , Form.group []
-        [ Form.label [for "focal"] [text "焦点距離(mm)"]
-        , Input.number [Input.id "focal", Input.value (String.fromFloat model.focal), Input.onInput SetFocal, Input.attrs [step "0.5"]]
-        , div [] focusButtons
-        ]
-      , Form.group []
-        [ Form.label [for "overfocus"] [text "過焦点距離(mm)"]
-        , div [id "overfocus"] [text (milliMeter oFocus)]
-        ]
+  div []
+  [ CDN.stylesheet
+  , Tab.config SetTab
+    |> Tab.items
+      [ Tab.item
+        { id = "from-lens"
+        , link = Tab.link [] [text "FromLens"]
+        , pane = Tab.pane [] [genIframe "from-lens.html"]
+        }
       ]
-    , renderGraph model.graph { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
-    ]
+    |> Tab.view model.tab
+  ]
