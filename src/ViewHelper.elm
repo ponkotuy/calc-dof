@@ -7,7 +7,7 @@ import Bootstrap.Form.Input as Input
 import Dof exposing (milliMeter, overfocus)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (for, id, step)
-import Tools exposing (fValueStrs, focusStrs)
+import Tools exposing (fValueStrs, focalsStr)
 
 bootstrap : List (Html msg) -> Html msg
 bootstrap xs = div [] ([CDN.stylesheet] ++ xs)
@@ -15,7 +15,7 @@ bootstrap xs = div [] ([CDN.stylesheet] ++ xs)
 focalForm : (String -> msg) -> Float -> Html msg
 focalForm msg focal =
   let
-    focusButtons = List.map (\f -> Button.button [Button.light, onClick (msg f)] [text f]) focusStrs
+    focusButtons = List.map (\f -> Button.button [Button.light, onClick (msg f)] [text f]) focalsStr
   in
     Form.group []
       [ Form.label [for "focal"] [text "焦点距離(mm)"]

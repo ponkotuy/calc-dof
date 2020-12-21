@@ -14,7 +14,7 @@ function renderGraph(datasets, option) {
       },
       scales: {
         xAxes: [{
-          type: 'logarithmic',
+          type: option.xAxesType,
           position: 'bottom',
           scaleLabel: {
             display: true,
@@ -22,7 +22,7 @@ function renderGraph(datasets, option) {
           }
         }],
         yAxes: [{
-          type: 'logarithmic',
+          type: option.yAxesType,
           position: 'left',
           scaleLabel: {
             display: true,
