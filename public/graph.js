@@ -45,7 +45,7 @@ customElements.define('render-graph',
       const rawOption = this.getAttribute('option');
       const dataset = JSON.parse(json);
       const option = JSON.parse(rawOption);
-      renderGraph(dataset, option);
+      if(dataset != null && option != null) renderGraph(dataset, option);
     }
   }
 );

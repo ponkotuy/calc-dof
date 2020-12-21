@@ -1,14 +1,12 @@
 module FromLens exposing (..)
-import Bootstrap.Button as Button exposing (onClick)
-import Bootstrap.CDN as CDN
 import Bootstrap.Form as Form
-import Bootstrap.Form.Input as Input
 
 import Browser
 import Dof exposing (..)
 import Graph exposing (Data, Graph, renderGraph)
-import Html exposing (Html, div, text)
-import Html.Attributes exposing (for, id, step)
+import Html exposing (Html)
+import Tools exposing (lengths)
+import ViewHelper exposing (bootstrap, fValueForm, focalForm, overfocusView)
 
 main = Browser.sandbox { init = init, update = update, view = view }
 
@@ -20,10 +18,6 @@ type alias Model =
 init : Model
 init =
   { fValue = 1.4, focal = 25.0, graph = { label = "後方被写界深度", data = calcGraph 1.4 25.0 } }
-
-fValues = ["0.95", "1.4", "1.8", "2.8", "4", "5.6", "8", "11", "16", "22"]
-lengths = [100, 150, 200, 300, 500, 700, 1000, 1500, 2000, 3000, 5000, 7000, 10000, 15000, 20000, 30000, 50000, 70000, 100000]
-focuses = ["7", "14", "24", "28", "35", "50", "70", "100", "200", "400", "600", "800"]
 
 update : Msg -> Model -> Model
 update msg model =
@@ -59,28 +53,11 @@ calc model =
 
 view : Model -> Html Msg
 view model =
-  let
-    oFocus = overfocus model.fValue model.focal
-    fValueButtons = List.map (\f -> Button.button [Button.light, onClick (SetFValue f)] [text f]) fValues
-    focusButtons = List.map (\f -> Button.button [Button.light, onClick (SetFocal f)] [text f]) focuses
-  in
-    div []
-    [ CDN.stylesheet
-    , Form.form []
-      [ Form.group []
-        [ Form.label [for "fvalue"] [text "F値"]
-        , Input.number [Input.id "fvalue", Input.value (String.fromFloat model.fValue), Input.onInput SetFValue, Input.attrs [step "0.05"]]
-        , div [] fValueButtons
-        ]
-      , Form.group []
-        [ Form.label [for "focal"] [text "焦点距離(mm)"]
-        , Input.number [Input.id "focal", Input.value (String.fromFloat model.focal), Input.onInput SetFocal, Input.attrs [step "0.5"]]
-        , div [] focusButtons
-        ]
-      , Form.group []
-        [ Form.label [for "overfocus"] [text "過焦点距離(mm)"]
-        , div [id "overfocus"] [text (milliMeter oFocus)]
-        ]
-      ]
-    , renderGraph model.graph { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
+  bootstrap
+  [ Form.form []
+    [ fValueForm SetFValue model.fValue
+    , focalForm SetFocal model.focal
+    , overfocusView model.fValue model.focal
     ]
+  , renderGraph model.graph { xAxes = "被写体までの距離(mm)", yAxes = "後方被写界深度(mm)" }
+  ]
