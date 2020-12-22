@@ -54,6 +54,15 @@ graphOption =
   , yAxesType = Logarithmic
   }
 
+defaultGraphs =
+  let
+    xFirst = List.head lengths |> Maybe.withDefault defaultLength
+    xLast = List.reverse lengths |> List.head |> Maybe.withDefault defaultLength
+  in
+    [ { label = "錯乱円径0.1", data = [{ x = xFirst, y = 0.1 }, { x = xLast, y = 0.1 }] }
+    , { label = "錯乱円径0.015", data = [{ x = xFirst, y = 0.015 }, { x = xLast, y = 0.015 }] }
+    ]
+
 view : Model -> Html Msg
 view model =
   bootstrap
@@ -63,5 +72,5 @@ view model =
       , lengthForm SetLength model.length
       , focalForm SetFocal model.focal
       ]
-    , renderGraph [model.graph] graphOption
+    , renderGraph ([model.graph] ++ defaultGraphs) graphOption
     ]

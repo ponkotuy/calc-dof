@@ -13,7 +13,7 @@ lengths = [100, 150, 200, 300, 500, 700, 1000, 1500, 2000, 3000, 5000, 7000, 100
 focals = [7, 14, 24, 28, 35, 50, 70, 100, 200, 400, 600, 800]
 acceptables : List WithDetail
 acceptables =
-  [ { value = 0.5, detail = "ボケを認識できる" }
+  [ { value = 0.1, detail = "ボケを認識できる" }
   , { value = 0.03, detail = "フルサイズでシャープ" }
   , { value = 0.02, detail = "APS-Cでシャープ" }
   , { value = 0.015, detail = "M4/3でシャープ" }
