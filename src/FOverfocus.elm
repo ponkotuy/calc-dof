@@ -52,5 +52,5 @@ view model =
   ,Form.form []
     [ focalForm SetFocal model.focal
     ]
-  , renderGraph model.graph graphOption
+  , renderGraph [model.graph] graphOption
   ]

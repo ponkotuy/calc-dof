@@ -14,19 +14,19 @@ type alias GraphOption =
 
 type AxesType = Category | Linear | Logarithmic | Time
 
-toJson : Graph -> String
-toJson graph =
+toJson : List Graph -> String
+toJson graphes =
   let
     encodeData : Data -> List (String, Encode.Value)
     encodeData data =
       [ ("x", Encode.float data.x)
         , ("y", Encode.float data.y)
       ]
-    encoder = Encode.list Encode.object
-      [ [ ("label", Encode.string graph.label)
-        , ("data", Encode.list Encode.object (List.map encodeData graph.data))
-        ]
+    encodeGraph graph =
+      [ ("label", Encode.string graph.label)
+      , ("data", Encode.list Encode.object (List.map encodeData graph.data))
       ]
+    encoder = Encode.list Encode.object (List.map encodeGraph graphes)
   in
     Encode.encode 0 encoder
 
@@ -42,10 +42,10 @@ toJsonOption option =
   in
     Encode.encode 0 encoder
 
-renderGraph : Graph -> GraphOption -> Html msg
-renderGraph graph option =
+renderGraph : List Graph -> GraphOption -> Html msg
+renderGraph graphes option =
   let
-    json = toJson graph
+    json = toJson graphes
     optionJson = toJsonOption option
   in
     node "render-graph"

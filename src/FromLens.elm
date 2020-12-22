@@ -71,5 +71,5 @@ view model =
     , focalForm SetFocal model.focal
     , overfocusView model.fValue model.focal
     ]
-  , renderGraph model.graph graphOption
+  , renderGraph [model.graph] graphOption
   ]

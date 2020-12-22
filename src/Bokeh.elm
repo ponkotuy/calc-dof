@@ -63,5 +63,5 @@ view model =
       , lengthForm SetLength model.length
       , focalForm SetFocal model.focal
       ]
-    , renderGraph model.graph graphOption
+    , renderGraph [model.graph] graphOption
     ]
