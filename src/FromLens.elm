@@ -4,7 +4,7 @@ import Bootstrap.Form as Form
 import Browser
 import Dof exposing (..)
 import Graph exposing (AxesType(..), Data, Graph, GraphOption, renderGraph)
-import Html exposing (Html)
+import Html exposing (Html, h3, text)
 import Tools exposing (defaultFValue, defaultFocal, lengths)
 import ViewHelper exposing (bootstrap, fValueForm, focalForm, overfocusView)
 
@@ -65,7 +65,8 @@ graphOption =
 view : Model -> Html Msg
 view model =
   bootstrap
-  [ Form.form []
+  [ h3 [] [text "レンズから被写界深度"]
+  ,Form.form []
     [ fValueForm SetFValue model.fValue
     , focalForm SetFocal model.focal
     , overfocusView model.fValue model.focal

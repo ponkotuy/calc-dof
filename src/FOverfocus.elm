@@ -4,7 +4,7 @@ import Bootstrap.Form as Form
 import Browser
 import Dof exposing (overfocus)
 import Graph exposing (AxesType(..), Data, Graph, renderGraph)
-import Html exposing (Html)
+import Html exposing (Html, h3, text)
 import Tools exposing (defaultFocal, fValues)
 import ViewHelper exposing (bootstrap, focalForm)
 
@@ -48,7 +48,8 @@ graphOption =
 view : Model -> Html Msg
 view model =
   bootstrap
-  [ Form.form []
+  [ h3 [] [text "F値に対する過焦点距離"]
+  ,Form.form []
     [ focalForm SetFocal model.focal
     ]
   , renderGraph model.graph graphOption
