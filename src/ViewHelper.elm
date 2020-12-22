@@ -7,7 +7,7 @@ import Bootstrap.Form.Input as Input
 import Dof exposing (milliMeter, overfocus)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (for, id, step)
-import Tools exposing (fValueStrs, focalsStr, lengthStrs)
+import Tools exposing (WithDetail, acceptableStr, acceptables, fValueStrs, focalsStr, lengthStrs)
 
 bootstrap : List (Html msg) -> Html msg
 bootstrap xs = div [] ([CDN.stylesheet] ++ xs)
@@ -45,10 +45,23 @@ fValueForm msg fValue =
       , div [] fValueButtons
       ]
 
-overfocusView : Float -> Float -> Html msg
-overfocusView fValue focal =
+acceptableForm : (String -> msg) -> Float -> Html msg
+acceptableForm msg acceptable =
   let
-    oFocus = overfocus fValue focal
+    btnText : WithDetail -> String
+    btnText a = (String.fromFloat a.value) ++ "(" ++ a.detail ++ ")"
+    buttons = List.map (\a -> Button.button [Button.light, onClick (acceptableStr a |> msg)] [text (btnText a)]) acceptables
+  in
+    Form.group []
+      [ Form.label [for "acceptable"] [text "許容錯乱円径"]
+      , Input.number [Input.id "acceptable", Input.value (String.fromFloat acceptable), Input.onInput msg, Input.attrs [step "0.0001"]]
+      , div [] buttons
+      ]
+
+overfocusView : Float -> Float -> Float -> Html msg
+overfocusView fValue focal acceptable =
+  let
+    oFocus = overfocus fValue focal acceptable
   in
     Form.group []
       [ Form.label [for "overfocus"] [text "過焦点距離(mm)"]

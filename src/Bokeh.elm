@@ -6,7 +6,7 @@ import Dof exposing (confusionLength)
 import Graph exposing (AxesType(..), Data, Graph, renderGraph)
 import Html exposing (Html, h3, text)
 import Tools exposing (defaultFValue, defaultFocal, defaultLength, lengths)
-import ViewHelper exposing (bootstrap, fValueForm, focalForm, lengthForm, overfocusView)
+import ViewHelper exposing (bootstrap, fValueForm, focalForm, lengthForm)
 
 main = Browser.sandbox { init = init, update = update, view = view }
 
