@@ -1,6 +1,7 @@
 module Tools exposing (..)
 
 defaultFValue = 1.4
+defaultLength = 1000
 defaultFocal = 24
 
 fValues = [0.95, 1.4, 1.8, 2.8, 4, 5.6, 8, 11, 16, 22]

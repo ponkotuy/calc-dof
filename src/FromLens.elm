@@ -1,4 +1,4 @@
-module FromLens exposing (..)
+module FromLens exposing (main)
 import Bootstrap.Form as Form
 
 import Browser

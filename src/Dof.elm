@@ -17,6 +17,6 @@ acceptableCircle = 1.0 / 60.0
 
 -- 錯乱径
 confusionLength fValue length focal target =
-  focal * focal * target / ((length - focal) * (length - focal - target) * -fValue)
+  abs (focal * focal * (length - target) / ((length - focal) * (target - focal) * fValue))
 
 milliMeter = format "0,0 [mm]"

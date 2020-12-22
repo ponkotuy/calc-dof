@@ -33,13 +33,18 @@ view model =
     |> Tab.items
       [ Tab.item
         { id = "from-lens"
-        , link = Tab.link [] [text "FromLens"]
+        , link = Tab.link [] [text "距離と被写界深度"]
         , pane = Tab.pane [] [genIframe "from-lens.html"]
         }
       , Tab.item
         { id = "f-overfocus"
-        , link = Tab.link [] [text "F-Overfocus"]
+        , link = Tab.link [] [text "F値と過焦点距離"]
         , pane = Tab.pane [] [genIframe "f-overfocus.html"]
+        }
+      , Tab.item
+        { id = "bokeh"
+        , link = Tab.link [] [text "ボケ量"]
+        , pane = Tab.pane [] [genIframe "bokeh.html"]
         }
       ]
     |> Tab.view model.tab

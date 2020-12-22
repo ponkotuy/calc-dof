@@ -1,4 +1,4 @@
-module FOverfocus exposing (..)
+module FOverfocus exposing (main)
 
 import Bootstrap.Form as Form
 import Browser
