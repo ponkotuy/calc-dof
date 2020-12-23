@@ -3,4 +3,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{}],"LeCH":[function(require,module,exports) {
 var e=require("../src/BokehNeedFvalue.elm"),l=e.Elm,d=l.BokehNeedFvalue.init({node:document.getElementById("bokeh-fvalue")});
 },{"../src/BokehNeedFvalue.elm":"c2qL"}]},{},["LeCH"], null)
-//# sourceMappingURL=/bokeh-need-fvalue.ad36136b.js.map
+//# sourceMappingURL=bokeh-need-fvalue.ad36136b.js.map

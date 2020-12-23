@@ -3,4 +3,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{}],"cG2J":[function(require,module,exports) {
 var e=require("../src/Bokeh.elm"),o=e.Elm,m=o.Bokeh.init({node:document.getElementById("bokeh")});
 },{"../src/Bokeh.elm":"cRIL"}]},{},["cG2J"], null)
-//# sourceMappingURL=/bokeh.3f317b2f.js.map
+//# sourceMappingURL=bokeh.3f317b2f.js.map

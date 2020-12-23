@@ -3,4 +3,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{}],"QaxE":[function(require,module,exports) {
 var e=require("../src/FromLens.elm"),m=e.Elm,n=m.FromLens.init({node:document.getElementById("from-lens")});
 },{"../src/FromLens.elm":"WBUs"}]},{},["QaxE"], null)
-//# sourceMappingURL=/from-lens.292669a9.js.map
+//# sourceMappingURL=from-lens.292669a9.js.map
