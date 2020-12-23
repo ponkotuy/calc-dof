@@ -68,12 +68,12 @@ graphOption =
 view : Model -> Html Msg
 view model =
   bootstrap
-  [ h3 [] [text "レンズから被写界深度"]
-  ,Form.form []
-    [ fValueForm SetFValue model.fValue
-    , focalForm SetFocal model.focal
-    , acceptableForm SetAcceptable model.acceptable
-    , overfocusView model.fValue model.focal model.acceptable
+    [ h3 [] [text "レンズから被写界深度"]
+    ,Form.form []
+      [ fValueForm SetFValue model.fValue
+      , focalForm SetFocal model.focal
+      , acceptableForm SetAcceptable model.acceptable
+      , overfocusView model.fValue model.focal model.acceptable
+      ]
+    , renderGraph [model.graph] graphOption
     ]
-  , renderGraph [model.graph] graphOption
-  ]

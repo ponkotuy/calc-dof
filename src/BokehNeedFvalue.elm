@@ -4,7 +4,7 @@ import Bootstrap.Form as Form
 import Browser
 import Dof exposing (neededFValueFromLength)
 import Format exposing (Format(..), defaultFormat, formatSize)
-import Graph exposing (Data, Graph)
+import Graph exposing (AxesType(..), Data, Graph, GraphOption, renderGraph)
 import Html exposing (Html, h3, text)
 import Tools exposing (focals)
 import ViewHelper exposing (bootstrap, formatForm, lengthForm)
@@ -29,7 +29,7 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     SetFormat format ->
-      calc { model | format = format |> Format.fromString }
+      calc { model | format = format |> Format.fromString |> Maybe.withDefault defaultFormat }
     SetObjLength length ->
       calc { model | objLength = length |> String.toFloat |> Maybe.withDefault defaultObjLength }
 
@@ -51,6 +51,14 @@ calc model =
       | graph = { graph | data = newdata }
     }
 
+graphOption : GraphOption
+graphOption =
+  { xAxes = "焦点距離(mm)"
+  , yAxes = "必要なF値"
+  , xAxesType = Linear
+  , yAxesType = Linear
+  }
+
 view : Model -> Html Msg
 view model =
   bootstrap
@@ -59,4 +67,5 @@ view model =
       [ formatForm SetFormat model.format
       , lengthForm "物体の大きさ" SetObjLength model.objLength
       ]
+    , renderGraph [model.graph] graphOption
     ]

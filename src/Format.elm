@@ -13,9 +13,10 @@ formatSize format =
     APS_C -> { x = 23.5, y = 15.6 }
     FullSize -> { x = 36.0, y = 24.0 }
 
-fromString : String -> Format
+fromString : String -> Maybe Format
 fromString str =
   case str of
-    "MFT" -> MicroFourThirds
-    "APSC" -> APS_C
-    "FullSize" -> FullSize
+    "MFT" -> Just MicroFourThirds
+    "APSC" -> Just APS_C
+    "FullSize" -> Just FullSize
+    _ -> Nothing
