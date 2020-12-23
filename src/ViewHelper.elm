@@ -3,8 +3,11 @@ module ViewHelper exposing (..)
 import Bootstrap.Button as Button exposing (Option, onClick)
 import Bootstrap.CDN as CDN
 import Bootstrap.Form as Form
+import Bootstrap.Form.Fieldset as Fieldset
 import Bootstrap.Form.Input as Input
+import Bootstrap.Form.Radio as Radio
 import Dof exposing (milliMeter, overfocus)
+import Format exposing (Format)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (for, id, step)
 import Tools exposing (WithDetail, acceptableStr, acceptables, fValueStrs, focalsStr, lengthStrs)
@@ -23,13 +26,13 @@ focalForm msg focal =
       , div [] focusButtons
       ]
 
-lengthForm : (String -> msg) -> Float -> Html msg
-lengthForm msg length =
+lengthForm : String -> (String -> msg) -> Float -> Html msg
+lengthForm obj msg length =
   let
     buttons = List.map (\l -> Button.button [Button.light, onClick (msg l)] [text l]) lengthStrs
   in
     Form.group []
-      [ Form.label [for "length"] [text "被写体までの距離(mm)"]
+      [ Form.label [for "length"] [text (obj ++ "(mm)")]
       , Input.number [Input.id "length", Input.value (String.fromFloat length), Input.onInput msg, Input.attrs [step "10"]]
       , div [] buttons
       ]
@@ -57,6 +60,21 @@ acceptableForm msg acceptable =
       , Input.number [Input.id "acceptable", Input.value (String.fromFloat acceptable), Input.onInput msg, Input.attrs [step "0.0001"]]
       , div [] buttons
       ]
+
+formatForm : (String -> msg) -> Format -> Html msg
+formatForm msg format =
+    Fieldset.config
+      |> Fieldset.asGroup
+      |> Fieldset.legend [] [text "センサーフォーマット"]
+      |> Fieldset.children
+        ( Radio.radioList "format"
+          [ Radio.create [Radio.id "mft", Radio.onClick (msg "MFT")] "マイクロフォーサーズ"
+          , Radio.create [Radio.id "apsc", Radio.onClick (msg "APSC")] "APS-C"
+          , Radio.create [Radio.id "fullsize", Radio.onClick (msg "FullSize")] "フルサイズ"
+          , Radio.checked
+          ]
+        )
+      |> Fieldset.view
 
 overfocusView : Float -> Float -> Float -> Html msg
 overfocusView fValue focal acceptable =

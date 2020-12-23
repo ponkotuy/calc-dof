@@ -16,6 +16,8 @@ overfocus fValue focal acceptable =
 confusionLength fValue length focal target =
   abs (focal * focal * (length - target) / ((length - focal) * (target - focal) * fValue))
 
-milliMeter = format "0,0 [mm]"
+-- ある物体を画角の半分に写し背景をボカすのに必要なF値
+neededFValueFromLength focal acceptable formatWide objLength =
+  focal / (2 * objLength * acceptable / formatWide - acceptable)
 
-acceptableMilli = format "0,0.000 [mm]"
+milliMeter = format "0,0 [mm]"
