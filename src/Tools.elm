@@ -14,10 +14,11 @@ focals = [7, 14, 24, 28, 35, 50, 70, 100, 200, 400, 600, 800]
 acceptables : List WithDetail
 acceptables =
   [ { value = 0.1, detail = "ボケを認識できる" }
-  , { value = 0.03, detail = "フルサイズでシャープ" }
-  , { value = 0.02, detail = "APS-Cでシャープ" }
-  , { value = 0.015, detail = "M4/3でシャープ" }
+  , { value = 0.03, detail = "フルサイズ" }
+  , { value = 0.02, detail = "APS-C" }
+  , { value = 0.015, detail = "M4/3" }
   , { value = 0.0082, detail = "α7Cの画素サイズ" }
+  , { value = 0.0075, detail = "GFX50Rの画素サイズ"}
   , { value = 0.0059, detail = "Z50の画素サイズ"}
   , { value = 0.0052, detail = "α7RIVの画素サイズ" }
   , { value = 0.0046, detail = "GX7MK3の画素サイズ" }
