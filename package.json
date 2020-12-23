@@ -14,7 +14,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel public/*.html --out-dir dist",
-    "build": "parcel build public/*.html --out-dir dist"
+    "build": "parcel build public/*.html --out-dir dist",
+    "github-build": "parcel build public/*.html --out-dir dist --public-url ./"
   },
   "author": "ponkotuy",
   "license": "Apache-2.0"
