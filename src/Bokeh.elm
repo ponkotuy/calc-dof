@@ -69,7 +69,7 @@ view model =
     [ h3 [] [text "距離とボケ量"]
     , Form.form []
       [ fValueForm SetFValue model.fValue
-      , lengthForm SetLength model.length
+      , lengthForm "ピント面までの距離" SetLength model.length
       , focalForm SetFocal model.focal
       ]
     , renderGraph ([model.graph] ++ defaultGraphs) graphOption

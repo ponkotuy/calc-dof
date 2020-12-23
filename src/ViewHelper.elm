@@ -7,7 +7,7 @@ import Bootstrap.Form.Fieldset as Fieldset
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Radio as Radio
 import Dof exposing (milliMeter, overfocus)
-import Format exposing (Format)
+import Format exposing (Format(..))
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (for, id, step)
 import Tools exposing (WithDetail, acceptableStr, acceptables, fValueStrs, focalsStr, lengthStrs)
@@ -68,10 +68,9 @@ formatForm msg format =
       |> Fieldset.legend [] [text "センサーフォーマット"]
       |> Fieldset.children
         ( Radio.radioList "format"
-          [ Radio.create [Radio.id "mft", Radio.onClick (msg "MFT")] "マイクロフォーサーズ"
-          , Radio.create [Radio.id "apsc", Radio.onClick (msg "APSC")] "APS-C"
-          , Radio.create [Radio.id "fullsize", Radio.onClick (msg "FullSize")] "フルサイズ"
-          , Radio.checked
+          [ Radio.create [Radio.id "mft", Radio.onClick (msg "MFT"), Radio.checked (format == MicroFourThirds)] "マイクロフォーサーズ"
+          , Radio.create [Radio.id "apsc", Radio.onClick (msg "APSC"), Radio.checked (format == APS_C)] "APS-C"
+          , Radio.create [Radio.id "fullsize", Radio.onClick (msg "FullSize"), Radio.checked(format == FullSize)] "フルサイズ"
           ]
         )
       |> Fieldset.view
