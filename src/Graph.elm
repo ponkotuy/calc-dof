@@ -1,4 +1,4 @@
-module Graph exposing (Data, Graph, GraphOption, renderGraph, AxesType(..))
+module Graph exposing (Data, Graph, GraphOption, AxesOption, render, AxesType(..))
 
 import Html exposing (Html, node)
 import Html.Attributes exposing (attribute)
@@ -10,12 +10,23 @@ type alias Graph =
   { label: String, data: List Data }
 
 type alias GraphOption =
-  { xAxes: String, yAxes: String, xAxesType: AxesType, yAxesType: AxesType }
+  { xAxes: AxesOption, yAxes: AxesOption }
+
+type alias AxesOption =
+  { label: String, typ: AxesType }
 
 type AxesType = Category | Linear | Logarithmic | Time
 
-toJson : List Graph -> String
-toJson graphes =
+gen : List Graph -> GraphOption -> Encode.Value
+gen graphes option =
+  Encode.object
+    [ ("type", Encode.string "line")
+    , ("data", genData graphes)
+    , ("options", genOptions option)
+    ]
+
+genData : List Graph -> Encode.Value
+genData graphes =
   let
     encodeData : Data -> List (String, Encode.Value)
     encodeData data =
@@ -27,32 +38,39 @@ toJson graphes =
       , ("data", Encode.list Encode.object (List.map encodeData graph.data))
       , ("fill", Encode.bool ((List.length graphes) == 1))
       ]
-    encoder = Encode.list Encode.object (List.map encodeGraph graphes)
+    encodeDataset = Encode.list Encode.object (List.map encodeGraph graphes)
   in
-    Encode.encode 0 encoder
+    Encode.object [("datasets", encodeDataset)]
 
-toJsonOption : GraphOption -> String
-toJsonOption option =
-  let
-    encoder = Encode.object
-      [ ("xAxes", Encode.string option.xAxes)
-      , ("yAxes", Encode.string option.yAxes)
-      , ("xAxesType", Encode.string (axesType option.xAxesType))
-      , ("yAxesType", Encode.string (axesType option.yAxesType))
+genOptions : GraphOption -> Encode.Value
+genOptions option =
+  Encode.object
+    [ ("title", Encode.object [("display", Encode.bool False)])
+    , ("scales", Encode.object [("xAxes", genAxes option.xAxes), ("yAxes", genAxes option.yAxes)])
+    ]
+
+genAxes : AxesOption -> Encode.Value
+genAxes option =
+  Encode.list Encode.object
+    [ [ ("type", Encode.string (axesType option.typ))
+      , ("scaleLebel", genScaleLevel option)
       ]
-  in
-    Encode.encode 0 encoder
+    ]
 
-renderGraph : List Graph -> GraphOption -> Html msg
-renderGraph graphes option =
+genScaleLevel : AxesOption -> Encode.Value
+genScaleLevel option =
+  Encode.object
+    [ ("display", Encode.bool True)
+    , ("labelString", Encode.string option.label)
+    ]
+
+render : List Graph -> GraphOption -> Html msg
+render graphes option =
   let
-    json = toJson graphes
-    optionJson = toJsonOption option
+    json = gen graphes option
   in
     node "render-graph"
-      [ attribute "json" json
-      , attribute "option" optionJson
-      ] []
+      [ attribute "json" (Encode.encode 0 json)] []
 
 axesType : AxesType -> String
 axesType typ =
