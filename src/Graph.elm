@@ -25,6 +25,7 @@ toJson graphes =
     encodeGraph graph =
       [ ("label", Encode.string graph.label)
       , ("data", Encode.list Encode.object (List.map encodeData graph.data))
+      , ("fill", Encode.bool ((List.length graphes) == 1))
       ]
     encoder = Encode.list Encode.object (List.map encodeGraph graphes)
   in

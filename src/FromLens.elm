@@ -13,14 +13,15 @@ main = Browser.sandbox { init = init, update = update, view = view }
 type Msg = SetFValue String | SetFocal String | SetAcceptable String
 
 type alias Model =
-  { fValue: Float, focal: Float, acceptable: Float, graph: Graph }
+  { fValue: Float, focal: Float, acceptable: Float, before: Graph, after: Graph }
 
 init : Model
 init =
   { fValue = defaultFValue
   , focal = defaultFocal
   , acceptable = defaultAcceptable
-  , graph = { label = "後方被写界深度", data = calcGraph defaultFValue defaultFocal defaultAcceptable }
+  , before = { label = "前方被写界深度", data = calcGraphBefore defaultFValue defaultFocal defaultAcceptable }
+  , after = { label = "後方被写界深度", data = calcGraphAfter defaultFValue defaultFocal defaultAcceptable }
   }
 
 update : Msg -> Model -> Model
@@ -33,8 +34,12 @@ update msg model =
     SetAcceptable acceptable ->
       calc { model | acceptable = acceptable |> String.toFloat |> Maybe.withDefault defaultAcceptable }
 
-calcGraph : Float -> Float -> Float -> List Data
-calcGraph fValue focal acceptable =
+calcGraphBefore : Float -> Float -> Float -> List Data
+calcGraphBefore fValue focal acceptable =
+  List.map (\l -> { x = l, y = before fValue l focal acceptable }) lengths
+
+calcGraphAfter : Float -> Float -> Float -> List Data
+calcGraphAfter fValue focal acceptable =
   let
     diff len =
       let
@@ -50,11 +55,13 @@ calcGraph fValue focal acceptable =
 calc : Model -> Model
 calc model =
   let
-    newdata = calcGraph model.fValue model.focal model.acceptable
-    graph = model.graph
+    newBefore = calcGraphBefore model.fValue model.focal model.acceptable
+    newAfter = calcGraphAfter model.fValue model.focal model.acceptable
+    before = model.before
+    after = model.after
   in
     { model
-      | graph = { graph | data = newdata }
+      | after = { after | data = newAfter }, before = { before | data = newBefore }
     }
 
 graphOption : GraphOption
@@ -75,5 +82,5 @@ view model =
       , acceptableForm SetAcceptable model.acceptable
       , overfocusView model.fValue model.focal model.acceptable
       ]
-    , renderGraph [model.graph] graphOption
+    , renderGraph [model.before, model.after] graphOption
     ]
