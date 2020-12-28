@@ -4,7 +4,7 @@ import Bootstrap.Form as Form
 import Browser
 import Dof exposing (neededFValueFromLength)
 import Format exposing (Format(..), formatName, formatSize)
-import Graph exposing (AxesType(..), Data, Graph, GraphOption)
+import Graph exposing (AxesType(..), Data, Graph, GraphOption, axesOption)
 import Html exposing (Html, h3, text)
 import Tools exposing (focals)
 import ViewHelper exposing (bootstrap, lengthForm)
@@ -48,9 +48,13 @@ calc model =
 
 graphOption : GraphOption
 graphOption =
-  { xAxes = { label = "焦点距離(mm)", typ = Linear }
-  , yAxes = { label = "必要なF値", typ = Linear }
-  }
+  let
+    xAxes = axesOption "焦点距離(mm)"
+    yAxes = axesOption "必要なF値"
+  in
+    { xAxes = { xAxes | typ = Logarithmic, min = List.minimum focals }
+    , yAxes = { yAxes | typ = Logarithmic, reverse = True, max = Just 10 }
+    }
 
 view : Model -> Html Msg
 view model =

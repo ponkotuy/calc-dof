@@ -3,7 +3,7 @@ module Bokeh exposing (main)
 import Bootstrap.Form as Form
 import Browser
 import Dof exposing (confusionLength)
-import Graph exposing (AxesType(..), Data, Graph)
+import Graph exposing (AxesType(..), Data, Graph, axesOption)
 import Html exposing (Html, h3, text)
 import Tools exposing (defaultFValue, defaultFocal, defaultLength, lengths)
 import ViewHelper exposing (bootstrap, fValueForm, focalForm, lengthForm)
@@ -48,9 +48,13 @@ calc model =
     }
 
 graphOption =
-  { xAxes = { label = "被写体までの距離(mm)", typ = Logarithmic }
-  , yAxes = { label = "錯乱円径(mm)", typ = Logarithmic }
-  }
+  let
+    xAxes = axesOption "被写体までの距離(mm)"
+    yAxes = axesOption "錯乱円径(mm)"
+  in
+    { xAxes = { xAxes | typ = Logarithmic }
+    , yAxes = { yAxes | typ = Logarithmic }
+    }
 
 defaultGraphs =
   let

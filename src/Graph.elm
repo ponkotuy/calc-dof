@@ -1,4 +1,4 @@
-module Graph exposing (Data, Graph, GraphOption, AxesOption, render, AxesType(..))
+module Graph exposing (Data, Graph, GraphOption, AxesOption, render, axesOption, AxesType(..))
 
 import Html exposing (Html, node)
 import Html.Attributes exposing (attribute)
@@ -13,7 +13,7 @@ type alias GraphOption =
   { xAxes: AxesOption, yAxes: AxesOption }
 
 type alias AxesOption =
-  { label: String, typ: AxesType }
+  { label: String, typ: AxesType, min: Maybe Float, max: Maybe Float, reverse: Bool }
 
 type AxesType = Category | Linear | Logarithmic | Time
 
@@ -53,7 +53,8 @@ genAxes : AxesOption -> Encode.Value
 genAxes option =
   Encode.list Encode.object
     [ [ ("type", Encode.string (axesType option.typ))
-      , ("scaleLebel", genScaleLevel option)
+      , ("scaleLabel", genScaleLevel option)
+      , ("ticks", genTicks option)
       ]
     ]
 
@@ -64,13 +65,21 @@ genScaleLevel option =
     , ("labelString", Encode.string option.label)
     ]
 
+genTicks : AxesOption -> Encode.Value
+genTicks option =
+  List.filterMap identity
+    [ Just ("reverse", Encode.bool option.reverse)
+    , Maybe.map (\min -> ("min", Encode.float min)) option.min
+    , Maybe.map (\max -> ("max", Encode.float max)) option.max
+    ] |> Encode.object
+
 render : List Graph -> GraphOption -> Html msg
 render graphes option =
   let
     json = gen graphes option
   in
     node "render-graph"
-      [ attribute "json" (Encode.encode 0 json)] []
+      [attribute "json" (Encode.encode 0 json)] []
 
 axesType : AxesType -> String
 axesType typ =
@@ -79,3 +88,7 @@ axesType typ =
     Linear -> "linear"
     Logarithmic -> "logarithmic"
     Time -> "time"
+
+axesOption : String -> AxesOption
+axesOption label =
+  { label = label, typ = Linear, min = Nothing, max = Nothing, reverse = False }

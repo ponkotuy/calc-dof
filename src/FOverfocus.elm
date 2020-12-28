@@ -3,7 +3,7 @@ module FOverfocus exposing (main)
 import Bootstrap.Form as Form
 import Browser
 import Dof exposing (overfocus)
-import Graph exposing (AxesType(..), Data, Graph)
+import Graph exposing (AxesType(..), Data, Graph, axesOption)
 import Html exposing (Html, h3, text)
 import Tools exposing (defaultAcceptable, defaultFocal, fValues)
 import ViewHelper exposing (acceptableForm, bootstrap, focalForm)
@@ -44,8 +44,8 @@ calcGraph focal acceptable =
   List.map (\f -> { x = f, y = overfocus f focal acceptable }) fValues
 
 graphOption =
-  { xAxes = { label = "F値", typ = Linear }
-  , yAxes = { label = "過焦点距離(mm)", typ = Linear }
+  { xAxes = axesOption "F値"
+  , yAxes = axesOption "過焦点距離(mm)"
   }
 
 view : Model -> Html Msg

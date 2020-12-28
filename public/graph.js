@@ -1,5 +1,11 @@
 let chart = null;
-
+Chart.scaleService.updateScaleDefaults('logarithmic', {
+  ticks: {
+    callback: function(tick, index, ticks) {
+      return tick.toLocaleString();
+    }
+  }
+});
 function renderGraph(json) {
   const ctx = document.getElementById('chart');
   if(chart != null) chart.destroy();

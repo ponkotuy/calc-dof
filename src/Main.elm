@@ -23,7 +23,7 @@ update msg model =
 
 genIframe : String -> Html msg
 genIframe url =
-  iframe [src url, attribute "width" "100%", attribute "height" "1040px", style "border" "0px"] []
+  iframe [src url, attribute "width" "100%", attribute "height" "1080px", style "border" "0px"] []
 
 view : Model -> Html Msg
 view model =

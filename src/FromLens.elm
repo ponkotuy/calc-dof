@@ -3,7 +3,7 @@ import Bootstrap.Form as Form
 
 import Browser
 import Dof exposing (..)
-import Graph exposing (AxesType(..), Data, Graph, GraphOption)
+import Graph exposing (AxesType(..), Data, Graph, GraphOption, axesOption)
 import Html exposing (Html, h3, text)
 import Tools exposing (defaultAcceptable, defaultFValue, defaultFocal, lengths)
 import ViewHelper exposing (acceptableForm, bootstrap, fValueForm, focalForm, overfocusView)
@@ -66,9 +66,13 @@ calc model =
 
 graphOption : GraphOption
 graphOption =
-  { xAxes = { label = "被写体までの距離(mm)", typ = Logarithmic }
-  , yAxes = { label = "後方被写界深度(mm)", typ = Logarithmic }
-  }
+  let
+    xAxes = axesOption "被写体までの距離(mm)"
+    yAxes = axesOption "被写界深度(mm)"
+  in
+    { xAxes = { xAxes | typ = Logarithmic }
+    , yAxes = { yAxes | typ = Logarithmic }
+    }
 
 view : Model -> Html Msg
 view model =
