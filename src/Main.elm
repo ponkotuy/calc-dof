@@ -22,9 +22,9 @@ main = Browser.application
   , onUrlRequest = UrlRequest
   }
 
-type Msg = SetTab Tab.State | UrlCahnge Url | UrlRequest Browser.UrlRequest
+type Msg = SetTab State | UrlCahnge Url | UrlRequest Browser.UrlRequest
 
-type alias Model = { tab: Tab.State, url: Url, key: Key }
+type alias Model = { tab: State, url: Url, key: Key }
 
 type alias DofTab = { id: String, text: String, html: String }
 
@@ -46,7 +46,7 @@ update msg model =
     SetTab tab ->
       let
         url = model.url
-        nextUrl = { url | query = Just (toQuery [string "tab" (Maybe.withDefault "from-lens" (stateId tab))]) }
+        nextUrl = { url | query = Just (toQuery [string "tab" (Maybe.withDefault "from-lens" activeTab)]) }
       in
         ({ model | tab = tab }, Nav.pushUrl model.key (Url.toString nextUrl) )
     UrlCahnge url ->
@@ -83,14 +83,10 @@ view model =
     ]
   }
 
-parseUrl : Url -> Tab.State
+parseUrl : Url -> State
 parseUrl url =
   let
     parser = s "" <?> Query.string "tab"
     id = Parser.parse parser url |> Maybe.Extra.join |> Maybe.withDefault "from-lens"
   in
     customInitialState id
-
-stateId : Tab.State -> Maybe String
-stateId (State {activeTab}) =
-  Tab.getActiveItem
