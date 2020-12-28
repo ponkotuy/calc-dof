@@ -1,14 +1,17 @@
 module Main exposing (..)
 
 import Bootstrap.CDN as CDN
-import Bootstrap.Tab as Tab exposing (Item, customInitialState)
+import Bootstrap.Grid as Grid
+import Bootstrap.Tab as Tab exposing (Item, customInitialState, State)
 import Browser exposing (Document)
-import Browser.Navigation exposing (Key)
+import Browser.Navigation as Nav exposing (Key)
 import Html exposing (Html, iframe, text)
 import Html.Attributes exposing (attribute, src, style)
 import Url exposing (Url)
-import Url.Parser as Parser
+import Url.Builder exposing (string, toQuery)
+import Url.Parser as Parser exposing ((<?>), s)
 import Url.Parser.Query as Query
+import Maybe.Extra
 
 main = Browser.application
   { init = init
@@ -21,7 +24,7 @@ main = Browser.application
 
 type Msg = SetTab Tab.State | UrlCahnge Url | UrlRequest Browser.UrlRequest
 
-type alias Model = { tab: Tab.State }
+type alias Model = { tab: Tab.State, url: Url, key: Key }
 
 type alias DofTab = { id: String, text: String, html: String }
 
@@ -34,22 +37,26 @@ tabs =
   ]
 
 init : () -> Url -> Key -> (Model, Cmd msg)
-init _ url _ =
-  ({ tab = parseUrl url }, Cmd.none)
+init _ url key =
+  ({ tab = parseUrl url, url = url, key = key }, Cmd.none)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  let
-    newmodel =
-      case msg of
-        SetTab tab ->
-          { model | tab = tab }
-        UrlCahnge url ->
-          { model | tab = parseUrl url }
-        UrlRequest _ ->
-          model
-  in
-    (newmodel, Cmd.none)
+  case msg of
+    SetTab tab ->
+      let
+        url = model.url
+        nextUrl = { url | query = Just (toQuery [string "tab" (Maybe.withDefault "from-lens" (stateId tab))]) }
+      in
+        ({ model | tab = tab }, Nav.pushUrl model.key (Url.toString nextUrl) )
+    UrlCahnge url ->
+      ({ model | tab = parseUrl url }, Cmd.none)
+    UrlRequest req ->
+      case req of
+        Browser.Internal url ->
+          (model, Nav.pushUrl model.key (Url.toString url))
+        Browser.External url ->
+          (model, Nav.load url)
 
 genIframe : String -> Html msg
 genIframe url =
@@ -67,17 +74,23 @@ view : Model -> Document Msg
 view model =
   { title = "被写界深度計算機"
   , body =
-    [ CDN.stylesheet
-    , Tab.config SetTab
-      |> Tab.items (List.map viewItem tabs)
-      |> Tab.view model.tab
+    [ Grid.container [style "margin-top" "40px"]
+      [CDN.stylesheet
+      , Tab.config SetTab
+        |> Tab.items (List.map viewItem tabs)
+        |> Tab.view model.tab
+      ]
     ]
   }
 
 parseUrl : Url -> Tab.State
 parseUrl url =
   let
-    parser = Query.string "tab"
-    id = Parser.parse parser url |> Maybe.withDefault "from-lens"
+    parser = s "" <?> Query.string "tab"
+    id = Parser.parse parser url |> Maybe.Extra.join |> Maybe.withDefault "from-lens"
   in
     customInitialState id
+
+stateId : Tab.State -> Maybe String
+stateId (State {activeTab}) =
+  Tab.getActiveItem
