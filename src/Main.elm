@@ -51,6 +51,11 @@ view model =
         , link = Tab.link [] [text "ボケとレンズスペック"]
         , pane = Tab.pane [] [genIframe "bokeh-need-fvalue.html"]
         }
+      , Tab.item
+        { id = "bokeh-power"
+        , link = Tab.link [] [text "必要ボケパワー"]
+        , pane = Tab.pane [] [genIframe "bokeh-power.html"]
+        }
       ]
     |> Tab.view model.tab
   ]
