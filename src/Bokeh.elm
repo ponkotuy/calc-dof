@@ -33,9 +33,13 @@ update msg model =
     SetFocal focal ->
       calc { model | focal = focal |> String.toFloat |> Maybe.withDefault defaultFocal }
 
+graphLengths : Float -> List Float
+graphLengths base =
+  List.sort (lengths ++ List.map (\r -> base * r) [0.8, 0.9, 0.95, 0.98, 1, 1.02, 1.05, 1.1, 1.2])
+
 calcGraph : Float -> Float -> Float -> List Data
 calcGraph fValue length focal =
-  List.map (\l -> { x = l, y = confusionLength fValue length focal l }) lengths
+  List.map (\l -> { x = l, y = confusionLength fValue length focal l }) (graphLengths length)
 
 calc : Model -> Model
 calc model =
